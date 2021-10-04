@@ -1,0 +1,51 @@
+name: Test CI-CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: CompileHello
+        run: echo Hello, BUild Done!!!
+  
+  DeployDev:
+    name: Deploy to Dev
+    if: github.event_name == 'push'
+    needs: [Build]
+    runs-on: ubuntu-latest
+    environment:
+      name: Dev-Environment
+    steps: 
+      - name: Dev deploy 
+        run: echo I am deploying to dev now !!!
+  
+  DeployQA:
+    name: Deploy to QA
+    if: github.event.ref == 'refs/heads/main'
+    needs: [Build]
+    runs-on: ubuntu-latest
+    environment: 
+      name: QA-Environment
+    steps: 
+      - name: DeployQA 
+        run: echo iam deploy to QA !!!
+  DeployProd: 
+    name: deploy to Prod 
+    needs: [DeployQA]
+    runs-on: ubuntu-latest 
+    environment:  
+      name: Prod-Environment
+    steps: 
+      - name: DeployProd 
+        run: echo I am deploy to prod, thanks for your approval !!!
