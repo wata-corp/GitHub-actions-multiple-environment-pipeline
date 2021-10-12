@@ -13,7 +13,7 @@ on:
 
 jobs:
   Build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
       - name: CompileHello
@@ -23,7 +23,7 @@ jobs:
     name: Deploy to Dev
     if: github.event_name == 'push'
     needs: [Build]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment:
       name: Dev-Environment
     steps: 
@@ -34,7 +34,7 @@ jobs:
     name: Deploy to QA
     if: github.event.ref == 'refs/heads/master'
     needs: [Build]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: 
       name: QA-Environment
     steps: 
@@ -43,7 +43,7 @@ jobs:
   DeployProd: 
     name: deploy to Prod 
     needs: [DeployQA]
-    runs-on: ubuntu-latest 
+    runs-on: self-hosted 
     environment:  
       name: Prod-Environment
     steps: 
